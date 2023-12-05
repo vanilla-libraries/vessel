@@ -1,14 +1,15 @@
 {
-  "name": "vessel",
+  "name": "@vanilla-libraries/vessel",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts",
+    "build": "tsup src/index.ts --dts",
     "dev": "tsx watch index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nathan <natmfat@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.10.3",

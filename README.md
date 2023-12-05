@@ -9,7 +9,7 @@ Vessel works with familiar web technologies including `Request` and `Response`. 
 Here's the obligatory "Hello World" in Vessel.
 
 ```ts
-import vessel from "vessel";
+import vessel from "@vanilla-libraries/vessel";
 import assert from "assert";
 
 vessel({
