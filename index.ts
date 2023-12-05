@@ -14,9 +14,12 @@ vessel({
       assert(new URL(req.url).pathname === "/");
       return new Response("hello" + ctx.count, { status: 200 });
     },
+    ({ req }) => {
+      return Response.redirect(new URL("/", req.url), 307);
+    },
   ],
   createContext: () =>
     ({
       count: 0,
     } satisfies Context),
-}).listen(5000);
+}).listen(5000, "127.0.0.1");

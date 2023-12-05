@@ -1,5 +1,6 @@
 import http from "http";
 import { AssertionError } from "assert";
+import { getAddress } from "./utils/getAddress";
 import { adaptRequest } from "./utils/adaptRequest";
 import { interpetResponse } from "./utils/interpetResponse";
 
@@ -10,13 +11,28 @@ export type Service<Context> = (
   args: ServiceArgs<Context>
 ) => Promise<Response | None> | (Response | None);
 
+export type VesselArgs<Context> = {
+  /**
+   * List of services that should be interpreted on each request
+   */
+  services: (Service<Context> | None)[];
+
+  /**
+   * Create initial context for each request
+   * @returns Context object
+   */
+  createContext: () => Promise<Context> | Context;
+};
+
+/**
+ * Create a new vessel server
+ * @param vesselArgs Configuration operations
+ * @returns
+ */
 export function vessel<Context extends {}>({
   services = [],
   createContext = () => ({} as Context),
-}: {
-  services: (Service<Context> | None)[];
-  createContext: () => Promise<Context> | Context;
-}) {
+}: VesselArgs<Context>) {
   // filter out everything except functions
   const filteredServices: Service<Context>[] = services.filter(
     (service) => service && typeof service === "function"
@@ -24,8 +40,17 @@ export function vessel<Context extends {}>({
 
   // create the http server base
   const server = http.createServer(async (httpReq, httpRes) => {
-    const req = await adaptRequest(httpReq);
+    // resolve URL & create request object
+    const { hostname, port } = getAddress(server);
+    const req = await adaptRequest(
+      httpReq,
+      new URL(httpReq.url || "/", `http://${hostname}:${port}`)
+    );
+
+    // create initial context
     const initialContext = await createContext();
+
+    // interpret each service
     for (const service of filteredServices) {
       try {
         const serviceRes = await service({ req, ctx: initialContext });
@@ -33,6 +58,7 @@ export function vessel<Context extends {}>({
           return interpetResponse(serviceRes, httpRes);
         }
       } catch (error) {
+        // assertion errors are used to describe if the route should match or not
         if (!(error instanceof AssertionError)) {
           return interpetResponse(
             Response.json({ error: new String(error) }, { status: 500 }),
@@ -42,6 +68,7 @@ export function vessel<Context extends {}>({
       }
     }
 
+    // default 404 response
     return interpetResponse(
       Response.json({ error: "404 not found" }, { status: 404 }),
       httpRes

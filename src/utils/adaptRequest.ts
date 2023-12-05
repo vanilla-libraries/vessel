@@ -1,7 +1,14 @@
 import http from "http";
 
+/**
+ * Convert the http request into a familiar Request object
+ * @param req http message
+ * @param url resolved url (includes hostname & port)
+ * @returns familiar Request object
+ */
 export async function adaptRequest(
-  req: http.IncomingMessage
+  req: http.IncomingMessage,
+  url: URL
 ): Promise<Request> {
   const headers = new Headers();
   for (const [headerName, headerValue] of Object.entries(req.headers)) {
@@ -27,7 +34,7 @@ export async function adaptRequest(
           }).catch(() => ({}))
         );
 
-  return new Request(`http://localhost${req.url}`, {
+  return new Request(url, {
     method: req.method!,
     headers,
     body,
