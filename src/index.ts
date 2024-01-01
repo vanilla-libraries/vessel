@@ -32,7 +32,7 @@ export type VesselArgs<Context> = {
 export function vessel<Context extends {}>({
   services = [],
   createContext = () => ({} as Context),
-}: VesselArgs<Context>) {
+}: Partial<VesselArgs<Context>> = {}) {
   // filter out everything except functions
   const filteredServices: Service<Context>[] = services.filter(
     (service) => service && typeof service === "function"

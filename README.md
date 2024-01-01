@@ -1,5 +1,3 @@
-WIP, doesn't work rn
-
 # Vessel
 
 A tiny HTTP framework that makes you do all the work.

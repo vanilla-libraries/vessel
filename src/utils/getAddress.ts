@@ -20,6 +20,6 @@ export function getAddress(server: http.Server) {
 
   return {
     port: address.port,
-    hostname: address.address,
+    hostname: address.address === "::" ? "0.0.0.0" : address.address,
   };
 }

@@ -1,14 +1,20 @@
 {
   "name": "@vanilla-libraries/vessel",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "A tiny HTTP framework that makes you do all the work",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --dts",
-    "dev": "tsx watch index.ts"
+    "dev": "tsx watch examples/index.ts",
+    "prepublish": "pnpm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "server"
+  ],
   "author": "Nathan <natmfat@gmail.com>",
   "license": "ISC",
   "devDependencies": {

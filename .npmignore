@@ -1,4 +1,0 @@
-# @audit-ok this file can be left blank to prevent dist from being excluded
-src/
-index.ts
-tsconfig.json
